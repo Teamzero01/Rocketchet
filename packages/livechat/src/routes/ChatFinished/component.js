@@ -1,14 +1,24 @@
 import { Component } from 'preact';
 import { withTranslation } from 'react-i18next';
 
+import { Livechat } from '../../api';
 import { Button } from '../../components/Button';
 import { ButtonGroup } from '../../components/ButtonGroup';
 import Screen from '../../components/Screen';
 import { createClassName } from '../../components/helpers';
+import Connection from '../../lib/connection';
 import styles from './styles.scss';
 
 class ChatFinished extends Component {
-	handleClick = () => {
+	constructor(props) {
+		super(props);
+		Connection.clearListeners();
+		Livechat.disconnect();
+	}
+
+	handleClick = async () => {
+		await Livechat.connect();
+		Connection.addListeners();
 		const { onRedirectChat } = this.props;
 		onRedirectChat && onRedirectChat();
 	};
